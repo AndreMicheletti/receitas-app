@@ -1,12 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 
-import SelectIngredients from './screens/SelectIngredients';
-import RecipeList from './screens/RecipeList';
+import SelectionScreen from './screens/SelectionScreen';
+import RecipeListScreen from './screens/RecipeListScreen';
 
 const RootNavigator = createStackNavigator({
-  searchIngredients: { screen: SelectIngredients },
-  recipeList: { screen: RecipeList }
+  selection: { screen: SelectionScreen },
+  recipeList: { screen: RecipeListScreen }
 })
 
 export default RootNavigator;

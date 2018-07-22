@@ -2,7 +2,8 @@ import {
   FETCH_INGREDIENTS_ATTEMPT,
   FETCH_INGREDIENTS_SUCCESS,
   FETCH_INGREDIENTS_FAILED,
-  SELECT_INGREDIENT
+  SELECT_INGREDIENT,
+  UNSELECT_ALL
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -16,7 +17,12 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     case SELECT_INGREDIENT:
       let copy = [...state.list]
       copy[action.payload].selected = !copy[action.payload].selected
-      return { ...state, list: copy }
+      return { ...state, list: copy };
+    case UNSELECT_ALL:
+      return {
+        ...state,
+        list: state.list.map(i => { return {...i, selected: false}})
+      }
     case FETCH_INGREDIENTS_ATTEMPT:
       return {...state, loading: true };
     case FETCH_INGREDIENTS_SUCCESS:
@@ -24,7 +30,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         loading: false,
         list: action.payload.map(item => {
-          return { name: item.name, selected: false };
+          return { name: item, selected: false };
         })
       };
     case FETCH_INGREDIENTS_FAILED:

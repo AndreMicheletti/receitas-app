@@ -5,17 +5,22 @@ import {
   FETCH_INGREDIENTS_ATTEMPT,
   FETCH_INGREDIENTS_SUCCESS,
   FETCH_INGREDIENTS_FAILED,
-  SELECT_INGREDIENT
+  SELECT_INGREDIENT,
+  UNSELECT_ALL
 } from './types';
 
 export const selectIngredient = (index) => {
   return { type: SELECT_INGREDIENT, payload: index }
 };
 
-export const fetchIngredients = () => {
+export const unselectAllIngredient = () => {
+  return { type: UNSELECT_ALL };
+};
+
+export const fetchIngredients = (forCategory) => {
   return (dispatch) => {
     dispatch({ type: FETCH_INGREDIENTS_ATTEMPT });
-    axios.get(`${BACKEND_URL}/ingredient`)
+    axios.get(`${BACKEND_URL}/ingredient/${forCategory}`)
       .then(response => {
         dispatch({
           type: FETCH_INGREDIENTS_SUCCESS,

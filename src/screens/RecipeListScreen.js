@@ -1,31 +1,52 @@
 import React from 'react';
-import { View, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  ScrollView,
+  ActivityIndicator,
+  FlatList,
+  Dimensions
+} from 'react-native';
 import { Text, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { fetchRecipes, fetchRecipesAll } from '../actions/recipesActions';
 import RecipeCard from '../components/RecipeCard';
 
-class RecipeList extends React.PureComponent {
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
+
+class RecipeListScreen extends React.PureComponent {
   static navigationOptions = {
     title: 'Receitas',
-  };
+    headerTintColor: 'white',
+    headerStyle: { backgroundColor: '#FE8558'}
+  }
 
   componentDidMount() {
-    let selectedList = this.props.ingredients.list.filter(i => i.selected);
-    if (selectedList && selectedList.length > 0) {
-      this.props.fetchRecipes({
-        ingredients: selectedList.map(i => i.name)
-      })
-    } else {
-      this.props.fetchRecipesAll()
-    }
+    setTimeout(() => {
+      const { selectedCategory } = this.props.recipes;
+      let selectedList = this.props.ingredients.list.filter(i => i.selected);
+
+      if (selectedList && selectedList.length > 0) {
+        this.props.fetchRecipes(selectedCategory, {
+          ingredients: selectedList.map(i => i.name)
+        })
+      } else {
+        this.props.fetchRecipesAll(selectedCategory);
+      }
+    }, 200);
   }
 
   renderIngredientButtons(list) {
     return list.map((ingredient, i) => {
       return (
-        <Button key={i} raised title={ingredient.name} />
+        <Button
+          key={i} raised
+          title={ingredient.name}
+          buttonStyle={{ backgroundColor: '#FE8558' }}
+          textStyle={{ fontSize: 18, color: 'white' }}
+        />
       );
     });
   }
@@ -47,7 +68,7 @@ class RecipeList extends React.PureComponent {
     }
   }
 
-  renderRecipes() {
+  renderRecipesView() {
     const { list, loading } = this.props.recipes;
     if (loading) {
       return (
@@ -57,15 +78,18 @@ class RecipeList extends React.PureComponent {
       );
     }
     return (
-      <View style={{ flex: 9, paddingBottom: 10 }}>
-        <ScrollView>
-          {list.map((recipe, i) => {
-            return (
-              <RecipeCard key={i} data={recipe} />
-            );
-          })}
-        </ScrollView>
-      </View>
+      <FlatList
+        data={list}
+        renderItem={({item}) => <RecipeCard data={item} />}
+        keyExtractor={(recipe, index) => `${recipe._id.$oid}`}
+        ListEmptyComponent={(
+          <View style={{ flex: 9, top: (SCREEN_WIDTH / 2.0) }}>
+            <Text style={{ fontSize: 24 }}>
+              {"Nenhuma receita encontrada"}
+            </Text>
+          </View>
+        )}
+      />
     );
   }
 
@@ -74,23 +98,24 @@ class RecipeList extends React.PureComponent {
     return (
       <View style={styles.screenStyle}>
         {this.renderSelectedIngredients()}
-        {this.renderRecipes()}
+        <View style={{ flex: 9, paddingBottom: 10 }}>
+          {this.renderRecipesView()}
+        </View>
       </View>
-    )
+    );
   }
 }
 
 const styles = {
   screenStyle: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: '#EEE'
   },
   ingredientsView: {
     height: 50,
     marginTop: 10,
     flexDirection: 'row',
-  },
-  recipeCardsView: {}
+  }
 };
 
 const mapStateToProps = (state) => {
@@ -103,4 +128,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   fetchRecipes,
   fetchRecipesAll
-})(RecipeList);
+})(RecipeListScreen);

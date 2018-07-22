@@ -2,7 +2,11 @@ import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import { Button } from 'react-native-elements';
 
-class SelectButton extends React.PureComponent {
+class SelectButton extends React.Component {
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return (nextProps.selected !== this.props.selected)
+  }
 
   getButtonStyle() {
     return this.props.selected ? {

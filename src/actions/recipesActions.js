@@ -5,22 +5,32 @@ import {
   FETCH_RECIPES_ATTEMPT,
   FETCH_RECIPES_SUCCESS,
   FETCH_RECIPES_FAILED,
-  SELECT_INGREDIENT
+  SELECT_CATEGORY_TYPE,
+  SELECT_INGREDIENT,
 } from './types';
 
-export const fetchRecipes = (params) => {
+export const selectCategoryType = (category) => {
+  return {
+    type: SELECT_CATEGORY_TYPE,
+    payload: category
+  }
+};
+
+export const fetchRecipes = (forCategory, params) => {
   return (dispatch) => {
     dispatch({ type: FETCH_RECIPES_ATTEMPT });
-    axios.post(`${BACKEND_URL}/recipe`, params)
+    axios.post(`${BACKEND_URL}/recipe/${forCategory}`, params)
       .then(response => recipesSuccessful(dispatch, response))
       .catch(err => recipesFailed(dispatch, err))
   };
 };
 
-export const fetchRecipesAll = (params) => {
+export const fetchRecipesAll = (forCategory, params) => {
   return (dispatch) => {
-    dispatch({ type: FETCH_RECIPES_ATTEMPT });
-    axios.get(`${BACKEND_URL}/recipe`)
+    dispatch({
+      type: FETCH_RECIPES_ATTEMPT
+    });
+    axios.get(`${BACKEND_URL}/recipe/${forCategory}`, {params})
       .then(response => recipesSuccessful(dispatch, response))
       .catch(err => recipesFailed(dispatch, err))
   };
