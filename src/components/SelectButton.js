@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import { Button } from 'react-native-elements';
+import colors from '../colors';
 
 class SelectButton extends React.Component {
 
@@ -9,13 +10,8 @@ class SelectButton extends React.Component {
   }
 
   getButtonStyle() {
-    return this.props.selected ? {
-      backgroundColor: 'rgba(213, 100, 140, 1)',
-      height: 38, minWidth: 90
-    } : {
-      height: 38,
-      backgroundColor: 'white',
-      minWidth: 90
+    return {
+      backgroundColor: this.props.selected ? colors.pink : colors.white,
     };
   }
 
@@ -33,7 +29,7 @@ class SelectButton extends React.Component {
         titleStyle={{ fontSize: 15, fontFamily: 'regular' }}
         color={selected ? 'white' : '#000'}
         containerViewStyle={{ marginBottom: 4, backgroundColor: 'transparent' }}
-        buttonStyle={this.getButtonStyle()}
+        buttonStyle={[this.getButtonStyle(), styles.defaultButtonStyle]}
         borderRadius={30}
         onPress={() => this.onClick()}
       />
@@ -44,6 +40,13 @@ class SelectButton extends React.Component {
 SelectButton.defaultProps = {
   selected: false,
   onSelect: () => {}
+};
+
+const styles = {
+  defaultButtonStyle: {
+    height: 38,
+    minWidth: 90
+  }
 }
 
 export default SelectButton;

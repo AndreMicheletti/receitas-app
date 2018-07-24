@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 
 import { fetchRecipes, fetchRecipesAll } from '../actions/recipesActions';
 import RecipeCard from '../components/RecipeCard';
+import colors from '../colors';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -20,7 +21,7 @@ class RecipeListScreen extends React.PureComponent {
   static navigationOptions = {
     title: 'Receitas',
     headerTintColor: 'white',
-    headerStyle: { backgroundColor: '#FE8558'}
+    headerStyle: { backgroundColor: colors.orange}
   }
 
   componentDidMount() {
@@ -44,7 +45,7 @@ class RecipeListScreen extends React.PureComponent {
         <Button
           key={i} raised
           title={ingredient.name}
-          buttonStyle={{ backgroundColor: '#FE8558' }}
+          buttonStyle={{ backgroundColor: colors.orange }}
           textStyle={{ fontSize: 18, color: 'white' }}
         />
       );

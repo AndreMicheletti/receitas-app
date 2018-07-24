@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image } from 'react-native';
 import { Text, Card, Button } from 'react-native-elements';
+import colors from '../colors';
 
 const PHOTO_URL = 'http://brcdn.ar-cdn.com/recipes/originalxl/2eedcd52-f27a-43f0-9039-854744f4ef78.jpg'
 
@@ -27,7 +28,7 @@ class RecipeCard extends React.PureComponent {
       >
         {this.renderIngredients()}
         <Button
-          backgroundColor='#03A9F4'
+          backgroundColor={colors.pink}
           fontFamily='Roboto'
           buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
           title='Ver Receita'

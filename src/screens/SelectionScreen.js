@@ -17,6 +17,7 @@ import {
 } from '../actions/ingredientActions';
 import { selectCategoryType } from '../actions/recipesActions';
 import SelectButton from '../components/SelectButton';
+import colors from '../colors';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -65,7 +66,7 @@ class SelectionScreen extends React.PureComponent {
     if (loading) {
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size={60} color="rgb(213, 100, 140)" />
+          <ActivityIndicator size={60} color={colors.pink} />
         </View>
       );
     }
@@ -140,7 +141,7 @@ const centerStyle = {
 const styles = {
   screenStyle: {
     flex: 1,
-    backgroundColor: '#FE8558',
+    backgroundColor: colors.orange,
     paddingTop: 25
   },
   textWhite: {
