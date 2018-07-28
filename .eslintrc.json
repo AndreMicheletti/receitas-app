@@ -17,6 +17,7 @@
       "arrow-body-style": ["off"],
       "no-unused-expressions": ["warn"],
       "no-unused-vars": ["warn"],
+      "no-console": ["off"],
       "react/destructuring-assignment": ["off"]
     }
 }

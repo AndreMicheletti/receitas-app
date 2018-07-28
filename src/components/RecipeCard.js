@@ -16,11 +16,11 @@ class RecipeCard extends React.PureComponent {
   }
 
   render() {
-    const { data, hidden } = this.props;
+    const { data } = this.props;
 
     return (
       <Card
-        style={{ display: hidden ? 'none' : 'flex' }}
+        style={{ paddingTop: 0 }}
         title={data.name}
         image={{ uri: `http://${data.photo}` }}
       >

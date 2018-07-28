@@ -14,17 +14,13 @@ import {
   selectIngredient,
   unselectAllIngredient,
 } from '../actions/ingredientActions';
-import { selectCategoryType } from '../actions/recipesActions';
+import { fetchRecipes, selectCategoryType } from '../actions/recipesActions';
 import SelectButton from '../components/SelectButton';
 import colors from '../colors';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 class SelectionScreen extends React.PureComponent {
-
-  componentDidMount() {
-    this.props.unselectAllIngredient();
-  }
 
   componentDidUpdate() {
     LayoutAnimation.spring();
@@ -41,16 +37,24 @@ class SelectionScreen extends React.PureComponent {
   }
 
   onActionButton() {
+    const { selected } = this.props.ingredients;
+    const { selectedCategory } = this.props.recipes;
+
+    this.props.fetchRecipes(selectedCategory, {
+      ingredients: selected,
+    });
     this.props.navigation.navigate('recipeList');
   }
 
-  renderIngredient({ item, index }) {
+  renderIngredient({ item }) {
+    const { selected } = this.props.ingredients;
+    const isSelected = (selected.indexOf(item) >= 0);
     return (
       <SelectButton
         raised
-        title={item.name}
-        selected={item.selected}
-        onSelect={() => this.onSelectIngredient(index)}
+        title={item}
+        selected={isSelected}
+        onSelect={() => this.onSelectIngredient(item)}
       />
     );
   }
@@ -70,7 +74,7 @@ class SelectionScreen extends React.PureComponent {
         contentContainerStyle={styles.ingredientsStyle}
         data={list}
         renderItem={props => this.renderIngredient(props)}
-        keyExtractor={item => item.name}
+        keyExtractor={item => item}
       />
     );
   }
@@ -136,10 +140,6 @@ class SelectionScreen extends React.PureComponent {
   }
 }
 
-SelectionScreen.navigationOptions = {
-  header: null,
-};
-
 const centerStyle = {
   justifyContent: 'center',
   alignItems: 'center',
@@ -149,7 +149,6 @@ const styles = {
   screenStyle: {
     flex: 1,
     backgroundColor: colors.orange,
-    paddingTop: 25,
   },
   textWhite: {
     fontFamily: 'sans-serif',
@@ -194,4 +193,5 @@ export default connect(mapStateToProps, {
   fetchIngredients,
   selectIngredient,
   unselectAllIngredient,
+  fetchRecipes,
 })(SelectionScreen);
