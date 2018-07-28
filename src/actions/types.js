@@ -1,5 +1,6 @@
 
-export const SELECT_INGREDIENT = 'ingredient::SELECT_INGREDIENT';
+export const INGREDIENT_INPUT_TEXT = 'ingredient::INGREDIENT_INPUT_TEXT';
+export const INGREDIENT_REMOVE = 'ingredient::INGREDIENT_REMOVE';
 export const UNSELECT_ALL = 'ingredient::UNSELECT_ALL';
 
 export const FETCH_INGREDIENTS_ATTEMPT = 'ingredient::FETCH_INGREDIENTS_ATTEMPT';

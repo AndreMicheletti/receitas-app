@@ -77,7 +77,7 @@ class RecipeListScreen extends React.PureComponent {
     return (
       <View style={styles.screenStyle}>
         <View style={{ flex: 1, paddingTop: 8, paddingBottom: 8 }}>
-          <IngredientList />
+          <IngredientList style={{ height: 70, padding: 10 }} />
         </View>
         <View style={{ flex: 9, paddingBottom: 10 }}>
           {this.renderRecipesView()}
@@ -101,11 +101,6 @@ const styles = {
   screenStyle: {
     flex: 1,
     backgroundColor: '#EEE',
-  },
-  ingredientsView: {
-    height: 50,
-    marginTop: 10,
-    flexDirection: 'row',
   },
 };
 

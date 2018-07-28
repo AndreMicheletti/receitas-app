@@ -2,28 +2,39 @@ import {
   FETCH_INGREDIENTS_ATTEMPT,
   FETCH_INGREDIENTS_SUCCESS,
   FETCH_INGREDIENTS_FAILED,
-  SELECT_INGREDIENT,
+  INGREDIENT_INPUT_TEXT,
+  INGREDIENT_REMOVE,
   UNSELECT_ALL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
   loading: false,
   list: [],
-  selected: [],
+  selected: ['açucar', 'ovos', 'leite'],
+  textInput: '',
 };
 
 const ingredientsReducer = (state = INITIAL_STATE, action) => {
   console.log(action);
   switch (action.type) {
-    case SELECT_INGREDIENT:
-      const index = state.selected.indexOf(action.payload);
-      const selectedCopy = [...state.selected];
-      if (index >= 0) {
-        selectedCopy.splice(index, 1);
-      } else {
-        selectedCopy.push(action.payload);
+    case INGREDIENT_INPUT_TEXT:
+      if (action.payload.includes(',')) {
+        const formatted = action.payload.replace(',', '').trim().toLowerCase();
+        if (state.selected.indexOf(formatted) === -1) {
+          return {
+            ...state,
+            textInput: '',
+            selected: [...state.selected, formatted],
+          };
+        }
+        return { ...state, textInput: '' };
       }
-      return { ...state, selected: selectedCopy };
+      return { ...state, textInput: action.payload };
+    case INGREDIENT_REMOVE:
+      return {
+        ...state,
+        selected: state.selected.filter(i => i !== action.payload),
+      };
     case UNSELECT_ALL:
       return { ...state, selected: [] };
     case FETCH_INGREDIENTS_ATTEMPT:

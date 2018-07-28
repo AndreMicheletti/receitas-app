@@ -5,12 +5,17 @@ import {
   FETCH_INGREDIENTS_ATTEMPT,
   FETCH_INGREDIENTS_SUCCESS,
   FETCH_INGREDIENTS_FAILED,
-  SELECT_INGREDIENT,
-  UNSELECT_ALL
+  INGREDIENT_INPUT_TEXT,
+  INGREDIENT_REMOVE,
+  UNSELECT_ALL,
 } from './types';
 
-export const selectIngredient = (index) => {
-  return { type: SELECT_INGREDIENT, payload: index }
+export const ingredientInput = (text) => {
+  return { type: INGREDIENT_INPUT_TEXT, payload: text };
+};
+
+export const removeIngredient = (text) => {
+  return { type: INGREDIENT_REMOVE, payload: text };
 };
 
 export const unselectAllIngredient = () => {
@@ -21,16 +26,16 @@ export const fetchIngredients = (forCategory) => {
   return (dispatch) => {
     dispatch({ type: FETCH_INGREDIENTS_ATTEMPT });
     axios.get(`${BACKEND_URL}/ingredient/${forCategory}`)
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: FETCH_INGREDIENTS_SUCCESS,
-          payload: response.data.success
+          payload: response.data.success,
         });
-        return;
+        return null;
       })
-      .catch(err => {
+      .catch(() => {
         dispatch({ type: FETCH_INGREDIENTS_FAILED });
-        return;
-      })
-  }
-}
+        return null;
+      });
+  };
+};
