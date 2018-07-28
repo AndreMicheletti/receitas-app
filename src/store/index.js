@@ -7,8 +7,8 @@ const store = createStore(
   reducers,
   {},
   compose(
-    applyMiddleware(thunk)
-  )
+    applyMiddleware(thunk),
+  ),
 );
 
 export default store;

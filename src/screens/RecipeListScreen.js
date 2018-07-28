@@ -4,7 +4,8 @@ import {
   ScrollView,
   ActivityIndicator,
   FlatList,
-  Dimensions
+  Dimensions,
+  LayoutAnimation,
 } from 'react-native';
 import { Text, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -18,32 +19,38 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 
 class RecipeListScreen extends React.PureComponent {
-  static navigationOptions = {
-    title: 'Receitas',
-    headerTintColor: 'white',
-    headerStyle: { backgroundColor: colors.orange}
+
+  constructor(props) {
+    super(props);
+    this.state = { showingMore: false };
   }
 
   componentDidMount() {
     setTimeout(() => {
       const { selectedCategory } = this.props.recipes;
-      let selectedList = this.props.ingredients.list.filter(i => i.selected);
+      const selectedList = this.props.ingredients.list.filter(i => i.selected);
 
       if (selectedList && selectedList.length > 0) {
         this.props.fetchRecipes(selectedCategory, {
-          ingredients: selectedList.map(i => i.name)
-        })
+          ingredients: selectedList.map(i => i.name),
+        });
       } else {
         this.props.fetchRecipesAll(selectedCategory);
       }
     }, 200);
   }
 
+  onShowMore() {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    this.setState({ showingMore: true });
+  }
+
   renderIngredientButtons(list) {
-    return list.map((ingredient, i) => {
+    return list.map((ingredient) => {
       return (
         <Button
-          key={i} raised
+          key={ingredient.name}
+          raised
           title={ingredient.name}
           buttonStyle={{ backgroundColor: colors.orange }}
           textStyle={{ fontSize: 18, color: 'white' }}
@@ -53,7 +60,7 @@ class RecipeListScreen extends React.PureComponent {
   }
 
   renderSelectedIngredients() {
-    let selectedList = this.props.ingredients.list.filter(i => i.selected);
+    const selectedList = this.props.ingredients.list.filter(i => i.selected);
     if (selectedList && selectedList.length > 0) {
       return (
         <View style={{ flex: 1, paddingBottom: 8 }}>
@@ -67,6 +74,21 @@ class RecipeListScreen extends React.PureComponent {
         </View>
       );
     }
+    return null;
+  }
+
+  renderRecipeCard(item, index) {
+    const { showingMore } = this.state;
+
+    if (index > 0 && !showingMore) {
+      return null;
+    }
+    return (
+      <RecipeCard
+        hidden={false}
+        data={item}
+      />
+    );
   }
 
   renderRecipesView() {
@@ -81,12 +103,12 @@ class RecipeListScreen extends React.PureComponent {
     return (
       <FlatList
         data={list}
-        renderItem={({item}) => <RecipeCard data={item} />}
-        keyExtractor={(recipe, index) => `${recipe._id.$oid}`}
+        renderItem={({ item, index }) => this.renderRecipeCard(item, index)}
+        keyExtractor={recipe => `${recipe._id.$oid}`}
         ListEmptyComponent={(
           <View style={{ flex: 9, top: (SCREEN_WIDTH / 2.0) }}>
             <Text style={{ fontSize: 24 }}>
-              {"Nenhuma receita encontrada"}
+              {'Nenhuma receita encontrada'}
             </Text>
           </View>
         )}
@@ -95,38 +117,55 @@ class RecipeListScreen extends React.PureComponent {
   }
 
   render() {
-    const { list, loading } = this.props.ingredients;
+    const { loading } = this.props.recipes;
+    const { showingMore } = this.state;
     return (
       <View style={styles.screenStyle}>
         {this.renderSelectedIngredients()}
         <View style={{ flex: 9, paddingBottom: 10 }}>
           {this.renderRecipesView()}
         </View>
+        {!loading && !showingMore && (
+          <View style={{ width: SCREEN_WIDTH, bottom: 0 }}>
+            <Button
+              title="Ver mais"
+              containerStyle={{ flex: 1, padding: 0 }}
+              buttonStyle={{ backgroundColor: colors.pink }}
+              onPress={() => this.onShowMore()}
+            />
+          </View>
+        )}
       </View>
     );
   }
 }
 
+RecipeListScreen.navigationOptions = {
+  title: 'Receitas',
+  headerTintColor: 'white',
+  headerStyle: { backgroundColor: colors.orange },
+};
+
 const styles = {
   screenStyle: {
     flex: 1,
-    backgroundColor: '#EEE'
+    backgroundColor: '#EEE',
   },
   ingredientsView: {
     height: 50,
     marginTop: 10,
     flexDirection: 'row',
-  }
+  },
 };
 
 const mapStateToProps = (state) => {
   return {
     ingredients: state.ingredients,
-    recipes: state.recipes
-  }
-}
+    recipes: state.recipes,
+  };
+};
 
 export default connect(mapStateToProps, {
   fetchRecipes,
-  fetchRecipesAll
+  fetchRecipesAll,
 })(RecipeListScreen);
