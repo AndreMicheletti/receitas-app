@@ -9,7 +9,7 @@ import {
 import { Text, Button, ButtonGroup } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import IngredientList from '../components/IngredientList';
+import IngredientTag from '../components/IngredientTag';
 import {
   fetchIngredients,
   unselectAllIngredient,
@@ -24,8 +24,27 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 class SelectionScreen extends React.PureComponent {
 
+  // constructor(props) {
+  //   super(props);
+  //   this.state = { keyboard: false };
+  // }
+
+  componentWillMount() {
+    // this.keyboardShowSub = Keyboard.addListener('keyboardDidShow', () => {
+    //   this.setState({ keyboard: true });
+    // });
+    // this.keyboardHideSub = Keyboard.addListener('keyboardDidHide', () => {
+    //   this.setState({ keyboard: false });
+    // });
+  }
+
   componentDidUpdate() {
     LayoutAnimation.spring();
+  }
+
+  componentWillUnmount() {
+    // this.keyboardShowSub.remove();
+    // this.keyboardHideSub.remove();
   }
 
   onSelectIngredient(index) {
@@ -42,10 +61,23 @@ class SelectionScreen extends React.PureComponent {
     const { selected } = this.props.ingredients;
     const { selectedCategory } = this.props.recipes;
 
-    this.props.fetchRecipes(selectedCategory, {
-      ingredients: selected,
-    });
+    this.props.fetchRecipes(selectedCategory, selected);
     this.props.navigation.navigate('recipeList');
+  }
+
+  renderIngredientTags() {
+    const { selected } = this.props.ingredients;
+    return selected.map((ingredient) => {
+      return (
+        <IngredientTag
+          key={ingredient}
+          ingredient={ingredient}
+          inverse
+          removable
+          onPress={i => this.props.removeIngredient(i)}
+        />
+      );
+    });
   }
 
   render() {
@@ -60,7 +92,7 @@ class SelectionScreen extends React.PureComponent {
     }
 
     return (
-      <KeyboardAvoidingView style={styles.screenStyle} enabled>
+      <View style={styles.screenStyle}>
         <View style={[{ flex: selectedCategory ? 1 : 4 }, centerStyle]}>
           {!selectedCategory && (
             <Text h3 style={styles.textWhite}>
@@ -86,15 +118,12 @@ class SelectionScreen extends React.PureComponent {
           />
         </View>
         {selectedCategory && (
-          <View
+          <KeyboardAvoidingView
             style={styles.ingredientViewStyle}
+            keyboardVerticalOffset={250}
             behavior="padding"
             enabled
           >
-            <IngredientList
-              style={{ flex: 1, padding: 10 }}
-              inverse
-            />
             <View style={styles.textInputViewStyle}>
               <TextInput
                 textAlign='center'
@@ -106,10 +135,14 @@ class SelectionScreen extends React.PureComponent {
                 underlineColorAndroid="white"
                 style={styles.textInputStyle}
                 onChangeText={text => this.props.ingredientInput(text)}
+                onSubmitEditing={() => this.props.ingredientInput(`${textInput},`)}
                 value={textInput}
               />
             </View>
-          </View>
+            <View style={styles.ingredientTagsStyle}>
+              {this.renderIngredientTags()}
+            </View>
+          </KeyboardAvoidingView>
         )}
         <View style={styles.goButtonStyle}>
           <Button
@@ -122,7 +155,7 @@ class SelectionScreen extends React.PureComponent {
             raised
           />
         </View>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
@@ -153,9 +186,13 @@ const styles = {
     flex: 4,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    width: SCREEN_WIDTH,
-    paddingTop: 80,
-    paddingBottom: 40,
+  },
+  ingredientTagsStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   goButtonStyle: {
     flex: 2,
@@ -163,7 +200,8 @@ const styles = {
     ...centerStyle,
   },
   textInputViewStyle: {
-    flex: 4,
+    paddingTop: 15,
+    height: 150,
     justifyContent: 'flex-start',
   },
   textInputStyle: {

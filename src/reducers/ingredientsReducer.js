@@ -10,7 +10,7 @@ import {
 const INITIAL_STATE = {
   loading: false,
   list: [],
-  selected: ['açucar', 'ovos', 'leite'],
+  selected: [],
   textInput: '',
 };
 
@@ -20,7 +20,8 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     case INGREDIENT_INPUT_TEXT:
       if (action.payload.includes(',')) {
         const formatted = action.payload.replace(',', '').trim().toLowerCase();
-        if (state.selected.indexOf(formatted) === -1) {
+        const index = state.selected.indexOf(formatted);
+        if (formatted !== '' && index === -1) {
           return {
             ...state,
             textInput: '',

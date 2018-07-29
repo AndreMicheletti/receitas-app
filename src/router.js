@@ -8,6 +8,7 @@ import { Button } from 'react-native-elements';
 import colors from './colors';
 import SelectionScreen from './screens/SelectionScreen';
 import RecipeListScreen from './screens/RecipeListScreen';
+import SavedRecipeScreen from './screens/SavedRecipeScreen';
 
 const RootNavigator = createStackNavigator({
   // Recipe List Screen
@@ -18,10 +19,17 @@ const RootNavigator = createStackNavigator({
         title: 'Receitas',
         headerTintColor: 'white',
         headerStyle: { backgroundColor: colors.orange },
-        headerRight: (
+        headerLeft: (
           <Button
             icon={{ name: 'search', size: 30, style: { marginRight: 0 } }}
             onPress={() => navigation.navigate('selection')}
+            buttonStyle={{ backgroundColor: 'transparent', padding: 0 }}
+          />
+        ),
+        headerRight: (
+          <Button
+            icon={{ name: 'ios-heart', size: 30, style: { marginRight: 0 }, type: 'ionicon' }}
+            onPress={() => navigation.navigate('saved')}
             buttonStyle={{ backgroundColor: 'transparent', padding: 0 }}
           />
         ),
@@ -33,6 +41,15 @@ const RootNavigator = createStackNavigator({
     screen: SelectionScreen,
     navigationOptions: {
       title: '',
+      headerTintColor: 'white',
+      headerStyle: { backgroundColor: colors.orange },
+    },
+  },
+  // Saved Recipes Screen
+  saved: {
+    screen: SavedRecipeScreen,
+    navigationOptions: {
+      title: 'Receitas salvas',
       headerTintColor: 'white',
       headerStyle: { backgroundColor: colors.orange },
     },

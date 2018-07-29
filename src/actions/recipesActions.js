@@ -15,10 +15,10 @@ export const selectCategoryType = (category) => {
   };
 };
 
-export const fetchRecipes = (forCategory, params) => {
+export const fetchRecipes = (forCategory, ingredients, limit = 10) => {
   return (dispatch) => {
     dispatch({ type: FETCH_RECIPES_ATTEMPT });
-    axios.post(`${BACKEND_URL}/recipe/${forCategory}`, params)
+    axios.post(`${BACKEND_URL}/recipe/${forCategory}`, { ingredients, limit })
       .then(response => recipesSuccessful(dispatch, response))
       .catch(err => recipesFailed(dispatch, err));
   };

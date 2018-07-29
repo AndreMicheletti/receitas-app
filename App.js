@@ -1,8 +1,10 @@
 import React from 'react';
-import { UIManager } from 'react-native';
+import { View, UIManager, ActivityIndicator } from 'react-native';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import store from './src/store';
+import colors from './src/colors';
+import reduxConfig from './src/store';
 import RootNavigator from './src/router';
 
 export default class App extends React.PureComponent {
@@ -15,9 +17,27 @@ export default class App extends React.PureComponent {
 
   render() {
     return (
-      <Provider store={store}>
-        <RootNavigator />
+      <Provider store={reduxConfig.store}>
+        <PersistGate
+          persistor={reduxConfig.persistor}
+          loading={(
+            <View style={styles.loadingScreenStyle}>
+              <ActivityIndicator color='white' size={30} />
+            </View>
+          )}
+        >
+          <RootNavigator />
+        </PersistGate>
       </Provider>
     );
   }
 }
+
+const styles = {
+  loadingScreenStyle: {
+    flex: 1,
+    backgroundColor: colors.orage,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+};

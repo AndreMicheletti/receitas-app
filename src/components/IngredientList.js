@@ -1,23 +1,19 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
+import IngredientTag from './IngredientTag';
 import { removeIngredient as removeIngredientAction } from '../actions/ingredientActions';
-import colors from '../colors';
 
-const renderIngredients = (list, inverse, removeIngredient) => {
-  const textColor = (inverse ? colors.pink : 'white');
+const renderIngredients = (list, inverse, removeIngredient, removable = true) => {
   return list.map((ingredient) => {
     return (
-      <Button
+      <IngredientTag
         key={ingredient}
-        iconRight={{ name: 'remove-circle', size: 20, color: textColor }}
-        raised
-        title={ingredient}
-        buttonStyle={{ backgroundColor: inverse ? 'white' : colors.orange }}
-        textStyle={{ fontSize: 18, color: textColor }}
-        onPress={() => removeIngredient(ingredient)}
+        inverse={inverse}
+        ingredient={ingredient}
+        removable={removable}
+        onPress={removeIngredient}
       />
     );
   });
@@ -28,20 +24,29 @@ const IngredientList = ({
   removeIngredient,
   style = styles.defaultStyle,
   inverse = false,
+  removable = true,
 }) => {
+  if (selected && selected.length > 0) {
+    return (
+      <View style={style}>
+        <ScrollView
+          horizontal
+          style={styles.ingredientView}
+          contentContainerStyle={styles.ingredientContentView}
+          showsHorizontalScrollIndicator={false}
+        >
+          {renderIngredients(selected, inverse, removeIngredient, removable)}
+        </ScrollView>
+      </View>
+    );
+  }
   return (
     <View style={style}>
-      <ScrollView
-        style={styles.ingredientView}
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: 'space-between',
-        }}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-      >
-        {renderIngredients(selected, inverse, removeIngredient)}
-      </ScrollView>
+      <IngredientTag
+        inverse={inverse}
+        ingredient="Nenhum ingrediente selecionado"
+        removable={removable}
+      />
     </View>
   );
 };
@@ -54,6 +59,11 @@ const styles = {
   ingredientView: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  ingredientContentView: {
+    flexGrow: 1,
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 };
 

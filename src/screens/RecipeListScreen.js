@@ -28,9 +28,7 @@ class RecipeListScreen extends React.PureComponent {
     const { selected } = this.props.ingredients;
 
     if (selected && selected.length > 0) {
-      this.props.fetchRecipes(selectedCategory, {
-        ingredients: selected,
-      });
+      this.props.fetchRecipes(selectedCategory, selected);
     } else {
       this.props.fetchRecipesAll(selectedCategory);
     }
@@ -59,11 +57,14 @@ class RecipeListScreen extends React.PureComponent {
       <FlatList
         data={list}
         renderItem={({ item, index }) => this.renderRecipeCard(item, index)}
-        keyExtractor={recipe => `${recipe._id.$oid}`}
+        keyExtractor={(recipe, i) => `${i}:${recipe.id}`}
         ListEmptyComponent={(
-          <View style={{ flex: 9, top: (SCREEN_WIDTH / 2.0) }}>
-            <Text style={{ fontSize: 24 }}>
+          <View style={styles.centerStyle}>
+            <Text style={{ fontSize: 20 }}>
               {'Nenhuma receita encontrada'}
+            </Text>
+            <Text style={{ fontSize: 20, paddingTop: 10 }}>
+              {'=('}
             </Text>
           </View>
         )}
@@ -75,19 +76,22 @@ class RecipeListScreen extends React.PureComponent {
     const { loading } = this.props.recipes;
     const { showingMore } = this.state;
     return (
-      <View style={styles.screenStyle}>
-        <View style={{ flex: 1, paddingTop: 8, paddingBottom: 8 }}>
-          <IngredientList style={{ height: 70, padding: 10 }} />
-        </View>
-        <View style={{ flex: 9, paddingBottom: 10 }}>
-          {this.renderRecipesView()}
+      <View style={{ flex: 1 }}>
+        <View style={styles.screenStyle}>
+          <View style={{ flex: 1, paddingTop: 8, paddingBottom: 8 }}>
+            <IngredientList style={{ height: 70 }} removable={false} />
+          </View>
+          <View style={{ flex: 9, paddingBottom: 10 }}>
+            {this.renderRecipesView()}
+          </View>
         </View>
         {!loading && !showingMore && (
-          <View style={{ width: SCREEN_WIDTH, bottom: 0 }}>
+          <View style={styles.showingMoreStyle}>
             <Button
               title="Ver mais"
-              containerStyle={{ flex: 1, padding: 0 }}
-              buttonStyle={{ backgroundColor: colors.pink }}
+              containerStyle={{ width: SCREEN_WIDTH, padding: 0, margin: 0 }}
+              buttonStyle={{ width: SCREEN_WIDTH, backgroundColor: colors.pink, padding: 12 }}
+              textStyle={{ fontSize: 18 }}
               onPress={() => this.onShowMore()}
             />
           </View>
@@ -101,6 +105,21 @@ const styles = {
   screenStyle: {
     flex: 1,
     backgroundColor: '#EEE',
+  },
+  showingMoreStyle: {
+    position: 'absolute',
+    width: SCREEN_WIDTH,
+    padding: 0,
+    margin: 0,
+    bottom: 0,
+    left: -15,
+  },
+  centerStyle: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 50,
   },
 };
 
