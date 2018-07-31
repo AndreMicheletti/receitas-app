@@ -9,7 +9,7 @@ import {
 import { Text, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { fetchRecipes, fetchRecipesAll, openRecipeUrl } from '../actions/recipesActions';
+import { fetchRecipes, fetchRecipesAll } from '../actions/recipesActions';
 import RecipeCard from '../components/RecipeCard';
 import IngredientList from '../components/IngredientList';
 import colors from '../colors';
@@ -144,5 +144,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   fetchRecipes,
   fetchRecipesAll,
-  openRecipeUrl,
 })(RecipeListScreen);

@@ -4,8 +4,6 @@ import {
   FETCH_RECIPES_FAILED,
   SELECT_CATEGORY_TYPE,
   UPDATE_RECIPE,
-  OPEN_RECIPE_URL,
-  CLOSE_RECIPE_URL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -39,10 +37,6 @@ const recipesReducer = (state = INITIAL_STATE, action) => {
           return recipe;
         }),
       };
-    case OPEN_RECIPE_URL:
-      return { ...state, openRecipe: action.payload };
-    case CLOSE_RECIPE_URL:
-      return { ...state, openRecipe: null };
     default:
       return state;
   }
