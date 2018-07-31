@@ -1,43 +1,68 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import colors from '../colors';
+import IngredientTag from './IngredientTag';
+import { removeIngredient as removeIngredientAction } from '../actions/ingredientActions';
 
-const renderIngredients = (list) => {
+const renderIngredients = (list, inverse, removeIngredient, removable = true) => {
   return list.map((ingredient) => {
     return (
-      <Button
+      <IngredientTag
         key={ingredient}
-        raised
-        title={ingredient}
-        buttonStyle={{ backgroundColor: colors.orange }}
-        textStyle={{ fontSize: 18, color: 'white' }}
-        onPress={() => {}}
+        inverse={inverse}
+        ingredient={ingredient}
+        removable={removable}
+        onPress={removeIngredient}
       />
     );
   });
 };
 
-const IngredientList = ({ selected }) => {
+const IngredientList = ({
+  selected,
+  removeIngredient,
+  style = styles.defaultStyle,
+  inverse = false,
+  removable = true,
+}) => {
+  if (selected && selected.length > 0) {
+    return (
+      <View style={style}>
+        <ScrollView
+          horizontal
+          style={styles.ingredientView}
+          contentContainerStyle={styles.ingredientContentView}
+          showsHorizontalScrollIndicator={false}
+        >
+          {renderIngredients(selected, inverse, removeIngredient, removable)}
+        </ScrollView>
+      </View>
+    );
+  }
   return (
-    <View style={{ flex: 1, paddingBottom: 8 }}>
-      <ScrollView
-        style={styles.ingredientsView}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-      >
-        {renderIngredients(selected)}
-      </ScrollView>
+    <View style={style}>
+      <IngredientTag
+        inverse={inverse}
+        ingredient="Nenhum ingrediente selecionado"
+        removable={removable}
+      />
     </View>
   );
 };
 
 const styles = {
+  defaultStyle: {
+    flex: 1,
+    padding: 10,
+  },
   ingredientView: {
-    backgroundColor: colors.orange,
-    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  ingredientContentView: {
+    flexGrow: 1,
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
 };
@@ -46,4 +71,6 @@ const mapStateToProps = (state) => {
   return { selected: state.ingredients.selected };
 };
 
-export default connect(mapStateToProps)(IngredientList);
+export default connect(mapStateToProps, {
+  removeIngredient: removeIngredientAction,
+})(IngredientList);

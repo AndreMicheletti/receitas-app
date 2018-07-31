@@ -1,24 +1,26 @@
 import React from 'react';
 import {
+  KeyboardAvoidingView,
   View,
-  FlatList,
   Dimensions,
-  ActivityIndicator,
   LayoutAnimation,
+  TextInput,
 } from 'react-native';
 import { Text, Button, ButtonGroup } from 'react-native-elements';
 import { connect } from 'react-redux';
 
+import IngredientTag from '../components/IngredientTag';
 import {
   fetchIngredients,
-  selectIngredient,
   unselectAllIngredient,
+  ingredientInput,
+  removeIngredient,
 } from '../actions/ingredientActions';
 import { fetchRecipes, selectCategoryType } from '../actions/recipesActions';
-import SelectButton from '../components/SelectButton';
 import colors from '../colors';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 class SelectionScreen extends React.PureComponent {
 
@@ -33,54 +35,41 @@ class SelectionScreen extends React.PureComponent {
   onSelectCategory(index) {
     const categoryName = (index === 0 ? 'doce' : 'salgado');
     this.props.selectCategoryType(categoryName);
-    this.props.fetchIngredients(categoryName);
+    // this.props.fetchIngredients(categoryName);
   }
 
   onActionButton() {
     const { selected } = this.props.ingredients;
     const { selectedCategory } = this.props.recipes;
 
-    this.props.fetchRecipes(selectedCategory, {
-      ingredients: selected,
-    });
+    this.props.fetchRecipes(selectedCategory, selected);
     this.props.navigation.navigate('recipeList');
   }
 
-  renderIngredient({ item }) {
-    const { selected } = this.props.ingredients;
-    const isSelected = (selected.indexOf(item) >= 0);
-    return (
-      <SelectButton
-        raised
-        title={item}
-        selected={isSelected}
-        onSelect={() => this.onSelectIngredient(item)}
-      />
-    );
+  onForceAddition() {
+    const { textInput } = this.props.ingredients;
+    this.props.ingredientInput(`${textInput},`);
   }
 
-  renderIngredientsList() {
-    const { list, loading } = this.props.ingredients;
-    if (loading) {
+  renderIngredientTags() {
+    const { selected } = this.props.ingredients;
+    return selected.map((ingredient) => {
       return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size={60} color={colors.pink} />
-        </View>
+        <IngredientTag
+          key={ingredient}
+          ingredient={ingredient}
+          inverse
+          removable
+          onPress={i => this.props.removeIngredient(i)}
+        />
       );
-    }
-    return (
-      <FlatList
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.ingredientsStyle}
-        data={list}
-        renderItem={props => this.renderIngredient(props)}
-        keyExtractor={item => item}
-      />
-    );
+    });
   }
 
   render() {
     const { selectedCategory } = this.props.recipes;
+    const { textInput } = this.props.ingredients;
+
     let selectedIndex = -1;
     if (selectedCategory === 'doce') {
       selectedIndex = 0;
@@ -115,20 +104,55 @@ class SelectionScreen extends React.PureComponent {
           />
         </View>
         {selectedCategory && (
-          <View style={styles.ingredientViewStyle}>
-            <Text h3 style={[styles.textWhite, { paddingBottom: 8 }]}>
-              O que tem na dispensa?
-            </Text>
-            <View style={{ flex: 1, width: SCREEN_WIDTH }}>
-              {this.renderIngredientsList()}
+          <KeyboardAvoidingView
+            style={styles.ingredientViewStyle}
+            keyboardVerticalOffset={250}
+            behavior="padding"
+            enabled
+          >
+            <View style={styles.textInputViewStyle}>
+              <TextInput
+                textAlign='center'
+                autoCapitalize='none'
+                textContentType="none"
+                placeholder="leite, ovos, açucar..."
+                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                textContentStyle={styles.textWhite}
+                underlineColorAndroid="white"
+                returnKeyType='search'
+                style={styles.textInputStyle}
+                onChangeText={text => this.props.ingredientInput(text)}
+                onSubmitEditing={() => this.onForceAddition()}
+                value={textInput}
+              />
+              <Button
+                icon={{
+                  name: 'md-add-circle',
+                  size: 30,
+                  color: 'white',
+                  style: { marginRight: 0 },
+                  type: 'ionicon',
+                }}
+                buttonStyle={{ backgroundColor: 'transparent', padding: 0 }}
+                onPress={() => this.onForceAddition()}
+              />
             </View>
-          </View>
+            <View style={styles.ingredientTagsStyle}>
+              {this.renderIngredientTags()}
+            </View>
+          </KeyboardAvoidingView>
         )}
         <View style={styles.goButtonStyle}>
           <Button
-            title="Me indique receitas >"
+            title="Me indique receitas"
+            iconRight={{
+              name: 'md-color-wand',
+              size: 38,
+              color: 'white',
+              type: 'ionicon',
+            }}
             borderRadius={5}
-            textStyle={{ fontSize: 20 }}
+            textStyle={{ fontSize: 23 }}
             onPress={() => this.onActionButton()}
             backgroundColor="rgba(213, 100, 140, 1)"
             large
@@ -149,6 +173,8 @@ const styles = {
   screenStyle: {
     flex: 1,
     backgroundColor: colors.orange,
+    height: SCREEN_HEIGHT,
+    width: SCREEN_WIDTH,
   },
   textWhite: {
     fontFamily: 'sans-serif',
@@ -161,23 +187,36 @@ const styles = {
     ...centerStyle,
   },
   ingredientViewStyle: {
-    flex: 2,
+    flex: 4,
     alignItems: 'center',
-    width: SCREEN_WIDTH,
-    paddingTop: 8,
+    justifyContent: 'flex-start',
   },
-  ingredientsStyle: {
-    backgroundColor: 'transparent',
-    paddingTop: 10,
-    paddingBottom: 10,
-    flexDirection: 'column',
+  ingredientTagsStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
-    paddingHorizontal: 8,
+    alignItems: 'center',
   },
   goButtonStyle: {
-    flex: 1,
+    flex: 2,
     flexDirection: 'column',
     ...centerStyle,
+  },
+  textInputViewStyle: {
+    paddingTop: 15,
+    height: 150,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  textInputStyle: {
+    width: 300,
+    height: 80,
+    fontSize: 26,
+    color: 'white',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
 };
 
@@ -191,7 +230,8 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   selectCategoryType,
   fetchIngredients,
-  selectIngredient,
+  ingredientInput,
+  removeIngredient,
   unselectAllIngredient,
   fetchRecipes,
 })(SelectionScreen);
