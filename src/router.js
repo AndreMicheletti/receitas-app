@@ -9,6 +9,7 @@ import colors from './colors';
 import SelectionScreen from './screens/SelectionScreen';
 import RecipeListScreen from './screens/RecipeListScreen';
 import SavedRecipeScreen from './screens/SavedRecipeScreen';
+import RecipeWebView from './screens/RecipeWebView';
 
 const RootNavigator = createStackNavigator({
   // Recipe List Screen
@@ -52,6 +53,17 @@ const RootNavigator = createStackNavigator({
       title: 'Receitas salvas',
       headerTintColor: 'white',
       headerStyle: { backgroundColor: colors.orange },
+    },
+  },
+  // Recipe Web view
+  recipeView: {
+    screen: RecipeWebView,
+    navigationOptions: ({ navigation }) => {
+      return {
+        title: navigation.getParam('name', 'Ver receita'),
+        headerTintColor: 'white',
+        headerStyle: { backgroundColor: colors.orange },
+      };
     },
   },
 }, {

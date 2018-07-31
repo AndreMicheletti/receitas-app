@@ -9,12 +9,17 @@ const IngredientTag = ({ ingredient, removable, onPress, inverse }) => {
   return (
     <View style={{ margin: 4 }}>
       <Button
-        iconRight={removable ? { name: 'remove-circle', size: 20, color: textColor } : undefined}
+        iconRight={removable ? {
+          name: 'ios-backspace',
+          size: 30,
+          color: textColor,
+          type: 'ionicon',
+        } : undefined}
         raised
         title={ingredient}
         buttonStyle={{ backgroundColor: inverse ? 'white' : colors.orange }}
         textStyle={{ fontSize: 18, color: textColor }}
-        onPress={() => onPress && onPress(ingredient)}
+        onPress={() => removable && onPress(ingredient)}
         containerStyle={{ height: 60 }}
       />
     </View>

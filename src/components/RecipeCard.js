@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Linking, Share } from 'react-native';
+import { View, Share } from 'react-native';
 import { Text, Card, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -12,12 +12,6 @@ class RecipeCard extends React.PureComponent {
 
   onLikeRecipe(isLifetimeLiked) {
     this.props.likeRecipe(this.props.data, isLifetimeLiked);
-  }
-
-  openLink(url) {
-    if (Linking.canOpenURL(url)) {
-      Linking.openURL(url);
-    }
   }
 
   shareRecipe() {
@@ -35,19 +29,20 @@ class RecipeCard extends React.PureComponent {
   renderIngredients() {
     const { data } = this.props;
     return data.ingredients.map((item) => {
+      const quantity = parseInt(item.quantity, 10);
       return (
         <Text
-          key={`${item.quantity}${item.measure}${item.name}`}
+          key={`${quantity}${item.measure}${item.name}`}
           style={{ marginBottom: 8, fontSize: 16 }}
         >
-          {`${item.quantity} ${item.measure} de ${item.name}`}
+          {`${quantity} ${item.measure} de ${item.name}`}
         </Text>
       );
     });
   }
 
   render() {
-    const { data, likedIds, likedRecipes } = this.props;
+    const { data, likedIds, likedRecipes, onOpenRecipe } = this.props;
     const isLiked = likedRecipes.indexOf(data.id) !== -1;
     const isLifetimeLiked = likedIds.indexOf(data.id) !== -1;
 
@@ -71,7 +66,7 @@ class RecipeCard extends React.PureComponent {
             textStyle={{ color: colors.blue, fontSize: 16 }}
             buttonStyle={{ margin: 0 }}
             title='Ver Receita'
-            onPress={() => this.openLink(data.url)}
+            onPress={() => onOpenRecipe(data.name, data.url)}
           />
           <Button
             backgroundColor='transparent'

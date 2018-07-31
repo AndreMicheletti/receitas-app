@@ -24,27 +24,8 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 class SelectionScreen extends React.PureComponent {
 
-  // constructor(props) {
-  //   super(props);
-  //   this.state = { keyboard: false };
-  // }
-
-  componentWillMount() {
-    // this.keyboardShowSub = Keyboard.addListener('keyboardDidShow', () => {
-    //   this.setState({ keyboard: true });
-    // });
-    // this.keyboardHideSub = Keyboard.addListener('keyboardDidHide', () => {
-    //   this.setState({ keyboard: false });
-    // });
-  }
-
   componentDidUpdate() {
     LayoutAnimation.spring();
-  }
-
-  componentWillUnmount() {
-    // this.keyboardShowSub.remove();
-    // this.keyboardHideSub.remove();
   }
 
   onSelectIngredient(index) {
@@ -63,6 +44,11 @@ class SelectionScreen extends React.PureComponent {
 
     this.props.fetchRecipes(selectedCategory, selected);
     this.props.navigation.navigate('recipeList');
+  }
+
+  onForceAddition() {
+    const { textInput } = this.props.ingredients;
+    this.props.ingredientInput(`${textInput},`);
   }
 
   renderIngredientTags() {
@@ -133,10 +119,22 @@ class SelectionScreen extends React.PureComponent {
                 placeholderTextColor="rgba(255, 255, 255, 0.7)"
                 textContentStyle={styles.textWhite}
                 underlineColorAndroid="white"
+                returnKeyType='search'
                 style={styles.textInputStyle}
                 onChangeText={text => this.props.ingredientInput(text)}
-                onSubmitEditing={() => this.props.ingredientInput(`${textInput},`)}
+                onSubmitEditing={() => this.onForceAddition()}
                 value={textInput}
+              />
+              <Button
+                icon={{
+                  name: 'md-add-circle',
+                  size: 30,
+                  color: 'white',
+                  style: { marginRight: 0 },
+                  type: 'ionicon',
+                }}
+                buttonStyle={{ backgroundColor: 'transparent', padding: 0 }}
+                onPress={() => this.onForceAddition()}
               />
             </View>
             <View style={styles.ingredientTagsStyle}>
@@ -146,9 +144,15 @@ class SelectionScreen extends React.PureComponent {
         )}
         <View style={styles.goButtonStyle}>
           <Button
-            title="Me indique receitas >"
+            title="Me indique receitas"
+            iconRight={{
+              name: 'md-color-wand',
+              size: 38,
+              color: 'white',
+              type: 'ionicon',
+            }}
             borderRadius={5}
-            textStyle={{ fontSize: 20 }}
+            textStyle={{ fontSize: 23 }}
             onPress={() => this.onActionButton()}
             backgroundColor="rgba(213, 100, 140, 1)"
             large
@@ -202,7 +206,9 @@ const styles = {
   textInputViewStyle: {
     paddingTop: 15,
     height: 150,
-    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   textInputStyle: {
     width: 300,

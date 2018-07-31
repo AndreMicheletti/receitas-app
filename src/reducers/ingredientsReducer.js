@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 };
 
 const ingredientsReducer = (state = INITIAL_STATE, action) => {
-  console.log(action);
+  // console.log(action);
   switch (action.type) {
     case INGREDIENT_INPUT_TEXT:
       if (action.payload.includes(',')) {

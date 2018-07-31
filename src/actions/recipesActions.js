@@ -6,6 +6,8 @@ import {
   FETCH_RECIPES_SUCCESS,
   FETCH_RECIPES_FAILED,
   SELECT_CATEGORY_TYPE,
+  OPEN_RECIPE_URL,
+  CLOSE_RECIPE_URL,
 } from './types';
 
 export const selectCategoryType = (category) => {
@@ -13,6 +15,14 @@ export const selectCategoryType = (category) => {
     type: SELECT_CATEGORY_TYPE,
     payload: category,
   };
+};
+
+export const openRecipeUrl = (url) => {
+  return { type: OPEN_RECIPE_URL, payload: url };
+};
+
+export const closeRecipeUrl = () => {
+  return { type: CLOSE_RECIPE_URL };
 };
 
 export const fetchRecipes = (forCategory, ingredients, limit = 10) => {

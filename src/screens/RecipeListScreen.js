@@ -9,7 +9,7 @@ import {
 import { Text, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { fetchRecipes, fetchRecipesAll } from '../actions/recipesActions';
+import { fetchRecipes, fetchRecipesAll, openRecipeUrl } from '../actions/recipesActions';
 import RecipeCard from '../components/RecipeCard';
 import IngredientList from '../components/IngredientList';
 import colors from '../colors';
@@ -39,9 +39,20 @@ class RecipeListScreen extends React.PureComponent {
     this.setState({ showingMore: true });
   }
 
+  onOpenRecipe(name, url) {
+    // this.props.openRecipeUrl(url);
+    this.props.navigation.navigate('recipeView', { name, url });
+  }
+
   renderRecipeCard(item, index) {
     if (index > 0 && !this.state.showingMore) return null;
-    return <RecipeCard hidden={false} data={item} />;
+    return (
+      <RecipeCard
+        hidden={false}
+        data={item}
+        onOpenRecipe={(name, url) => this.onOpenRecipe(name, url)}
+      />
+    );
   }
 
   renderRecipesView() {
@@ -73,7 +84,7 @@ class RecipeListScreen extends React.PureComponent {
   }
 
   render() {
-    const { loading } = this.props.recipes;
+    const { list, loading } = this.props.recipes;
     const { showingMore } = this.state;
     return (
       <View style={{ flex: 1 }}>
@@ -85,7 +96,7 @@ class RecipeListScreen extends React.PureComponent {
             {this.renderRecipesView()}
           </View>
         </View>
-        {!loading && !showingMore && (
+        {!loading && !showingMore && list.length > 0 && (
           <View style={styles.showingMoreStyle}>
             <Button
               title="Ver mais"
@@ -133,4 +144,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   fetchRecipes,
   fetchRecipesAll,
+  openRecipeUrl,
 })(RecipeListScreen);

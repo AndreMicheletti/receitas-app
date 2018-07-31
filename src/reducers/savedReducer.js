@@ -9,7 +9,7 @@ const INITIAL_STATE = {
 };
 
 const savedReducer = (state = INITIAL_STATE, action) => {
-  console.log(state);
+  // console.log(state);
   switch (action.type) {
     case LIKED_RECIPE:
       const { id } = action.payload;
