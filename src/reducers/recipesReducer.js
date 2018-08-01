@@ -14,6 +14,7 @@ const INITIAL_STATE = {
 };
 
 const recipesReducer = (state = INITIAL_STATE, action) => {
+  console.log(action);
   switch (action.type) {
     case SELECT_CATEGORY_TYPE:
       return { ...state, selectedCategory: action.payload };

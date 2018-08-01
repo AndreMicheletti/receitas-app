@@ -110,6 +110,19 @@ class SelectionScreen extends React.PureComponent {
             behavior="padding"
             enabled
           >
+            {/* <Button
+              title="sugestões"
+              titleStyle={{ fontSize: 25 }}
+              containerStyle={{ padding: 0, margin: 0 }}
+              icon={{
+                name: 'ios-help-circle-outline',
+                size: 30,
+                color: 'white',
+                type: 'ionicon',
+              }}
+              buttonStyle={{ backgroundColor: 'transparent', padding: 5, margin: 0 }}
+              onPress={() => this.onForceAddition()}
+            /> */}
             <View style={styles.textInputViewStyle}>
               <TextInput
                 textAlign='center'
@@ -180,14 +193,9 @@ const styles = {
     fontFamily: 'sans-serif',
     color: 'white',
   },
-  headerStyle: {
-    flex: 1,
-    paddingTop: 30,
-    flexDirection: 'column',
-    ...centerStyle,
-  },
   ingredientViewStyle: {
     flex: 4,
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
@@ -204,7 +212,7 @@ const styles = {
     ...centerStyle,
   },
   textInputViewStyle: {
-    paddingTop: 15,
+    padding: 0,
     height: 150,
     flexDirection: 'row',
     alignItems: 'center',

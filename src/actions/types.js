@@ -15,3 +15,5 @@ export const FETCH_RECIPES_SUCCESS = 'recipe::FETCH_RECIPES_SUCCESS';
 export const FETCH_RECIPES_FAILED = 'recipe::FETCH_RECIPES_FAILED';
 
 export const LIKED_RECIPE = 'saved::LIKED_RECIPE';
+
+export const TUTORIAL_COMPLETED = 'settings::TUTORIAL_COMPLETED';

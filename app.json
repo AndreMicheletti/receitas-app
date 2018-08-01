@@ -1,5 +1,13 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+    "name": "ReceitApp",
+    "slug": "receit-app",
+    "sdkVersion": "27.0.0",
+    "privacy": "public",
+    "version": "1.0",
+    "platforms": ["ios", "android"],
+    "orientation": "portrait",
+    "primaryColor": "#FE8558",
+    "icon": "./assets/icon.png"
   }
 }
