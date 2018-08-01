@@ -8,6 +8,15 @@
     "platforms": ["ios", "android"],
     "orientation": "portrait",
     "primaryColor": "#FE8558",
-    "icon": "./assets/icon.png"
+    "icon": "./assets/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.async.receitapp",
+      "icon": "./assets/icon.png"
+    },
+    "android": {
+      "package": "com.async.receitapp",
+      "versionCode": 10,
+      "icon": "./assets/icon.png"
+    }
   }
 }
