@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  // createBottomTabNavigator,
+  createSwitchNavigator,
   createStackNavigator,
 } from 'react-navigation';
 import { Button } from 'react-native-elements';
@@ -10,8 +10,10 @@ import SelectionScreen from './screens/SelectionScreen';
 import RecipeListScreen from './screens/RecipeListScreen';
 import SavedRecipeScreen from './screens/SavedRecipeScreen';
 import RecipeWebView from './screens/RecipeWebView';
+import TutorialScreen from './screens/TutorialScreen';
 
-const RootNavigator = createStackNavigator({
+
+const MainNavigator = createStackNavigator({
   // Recipe List Screen
   recipeList: {
     screen: RecipeListScreen,
@@ -70,6 +72,23 @@ const RootNavigator = createStackNavigator({
   // Options
   headerMode: 'float',
   lazy: true,
+});
+
+const Tutorial = createStackNavigator({
+  tutorial: {
+    screen: TutorialScreen,
+    navigationOptions: {
+      title: '',
+      header: null,
+    },
+  },
+});
+
+const RootNavigator = createSwitchNavigator({
+  welcome: Tutorial,
+  main: MainNavigator,
+}, {
+  initialRouteName: 'welcome',
 });
 
 export default RootNavigator;

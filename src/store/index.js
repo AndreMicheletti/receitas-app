@@ -8,7 +8,7 @@ import reducers from '../reducers';
 const persistedReducers = persistReducer({
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['saved'],
+  whitelist: ['saved', 'settings'],
   timeout: 5000,
 }, reducers);
 

@@ -14,7 +14,6 @@ export const FETCH_RECIPES_ATTEMPT = 'recipe::FETCH_RECIPES_ATTEMPT';
 export const FETCH_RECIPES_SUCCESS = 'recipe::FETCH_RECIPES_SUCCESS';
 export const FETCH_RECIPES_FAILED = 'recipe::FETCH_RECIPES_FAILED';
 
-export const OPEN_RECIPE_URL = 'recipe::OPEN_RECIPE_URL';
-export const CLOSE_RECIPE_URL = 'recipe::CLOSE_RECIPE_URL';
-
 export const LIKED_RECIPE = 'saved::LIKED_RECIPE';
+
+export const TUTORIAL_COMPLETED = 'settings::TUTORIAL_COMPLETED';

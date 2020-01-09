@@ -9,7 +9,7 @@ import {
 import { Text, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { fetchRecipes, fetchRecipesAll, openRecipeUrl } from '../actions/recipesActions';
+import { fetchRecipes, fetchRecipesAll } from '../actions/recipesActions';
 import RecipeCard from '../components/RecipeCard';
 import IngredientList from '../components/IngredientList';
 import colors from '../colors';
@@ -29,8 +29,6 @@ class RecipeListScreen extends React.PureComponent {
 
     if (selected && selected.length > 0) {
       this.props.fetchRecipes(selectedCategory, selected);
-    } else {
-      this.props.fetchRecipesAll(selectedCategory);
     }
   }
 
@@ -42,6 +40,29 @@ class RecipeListScreen extends React.PureComponent {
   onOpenRecipe(name, url) {
     // this.props.openRecipeUrl(url);
     this.props.navigation.navigate('recipeView', { name, url });
+  }
+
+  renderEmptyList() {
+    const { selected } = this.props.ingredients;
+    if (selected.length > 0) {
+      return (
+        <View style={styles.centerStyle}>
+          <Text style={{ fontSize: 20 }}>
+            {'Nenhuma receita encontrada'}
+          </Text>
+          <Text style={{ fontSize: 20, paddingTop: 10 }}>
+            {'=('}
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <View style={[styles.centerStyle, { justifyContent: 'space-around' }]}>
+        <Text style={{ fontSize: 20, paddingHorizontal: 10, textAlign: 'center' }}>
+          Clique na lupa para procurar por ingredientes
+        </Text>
+      </View>
+    );
   }
 
   renderRecipeCard(item, index) {
@@ -69,16 +90,7 @@ class RecipeListScreen extends React.PureComponent {
         data={list}
         renderItem={({ item, index }) => this.renderRecipeCard(item, index)}
         keyExtractor={(recipe, i) => `${i}:${recipe.id}`}
-        ListEmptyComponent={(
-          <View style={styles.centerStyle}>
-            <Text style={{ fontSize: 20 }}>
-              {'Nenhuma receita encontrada'}
-            </Text>
-            <Text style={{ fontSize: 20, paddingTop: 10 }}>
-              {'=('}
-            </Text>
-          </View>
-        )}
+        ListEmptyComponent={this.renderEmptyList()}
       />
     );
   }
@@ -144,5 +156,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   fetchRecipes,
   fetchRecipesAll,
-  openRecipeUrl,
 })(RecipeListScreen);
